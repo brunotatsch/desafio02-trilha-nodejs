@@ -35,11 +35,9 @@ function checksCreateTodosUserAvailability(request, response, next)
     next();
   }
 
-  const countTodos = user.todo.length;
-
-  if (countTodos > 10)
+  if (user.todos.length >= 10)
   {
-    return response.status(400).json({ error: 'Create todo denied' });
+    return response.status(403).json({ error: 'You need upgrade account to create more todo' });
   }
 
   next();
@@ -53,6 +51,10 @@ function checksTodoExists(request, response, next)
 
   const user = users.find((user) => user.username === username);
 
+  if (!validate(id)) {
+    return response.status(400).json({ error: 'Id isnt UUID' });
+  }
+  
   if (user)
   {
     const todo = user.todos.find((todo) => todo.id === id);
